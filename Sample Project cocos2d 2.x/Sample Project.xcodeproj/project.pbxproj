@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FB09AE3E1511CB7600DD32CD /* CCNode+SFGestureRecognizers.m in Sources */ = {isa = PBXBuildFile; fileRef = FB09AE3D1511CB7600DD32CD /* CCNode+SFGestureRecognizers.m */; };
 		FB52EBB11510CDCF000E70D0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB52EBB01510CDCF000E70D0 /* QuartzCore.framework */; };
 		FB52EBB31510CDCF000E70D0 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB52EBB21510CDCF000E70D0 /* OpenGLES.framework */; };
 		FB52EBB51510CDCF000E70D0 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB52EBB41510CDCF000E70D0 /* OpenAL.framework */; };
@@ -129,11 +128,10 @@
 		FB52ED2F1510CDD4000E70D0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FB52ED2E1510CDD4000E70D0 /* main.m */; };
 		FB52ED321510CDD4000E70D0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FB52ED311510CDD4000E70D0 /* AppDelegate.m */; };
 		FB52ED351510CDD4000E70D0 /* HelloWorldLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FB52ED341510CDD4000E70D0 /* HelloWorldLayer.m */; };
+		FBFF3CA11511E6E50098F6AE /* CCNode+SFGestureRecognizers.m in Sources */ = {isa = PBXBuildFile; fileRef = FBFF3CA01511E6E50098F6AE /* CCNode+SFGestureRecognizers.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		FB09AE3C1511CB7600DD32CD /* CCNode+SFGestureRecognizers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CCNode+SFGestureRecognizers.h"; path = "../../../../../Programming/Private/Kubik/Kubik/Other Code/CCNode+SFGestureRecognizers.h"; sourceTree = "<group>"; };
-		FB09AE3D1511CB7600DD32CD /* CCNode+SFGestureRecognizers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "CCNode+SFGestureRecognizers.m"; path = "../../../../../Programming/Private/Kubik/Kubik/Other Code/CCNode+SFGestureRecognizers.m"; sourceTree = "<group>"; };
 		FB52EBAC1510CDCF000E70D0 /* Sample Project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sample Project.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB52EBB01510CDCF000E70D0 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		FB52EBB21510CDCF000E70D0 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -388,6 +386,8 @@
 		FB52ED311510CDD4000E70D0 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		FB52ED331510CDD4000E70D0 /* HelloWorldLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelloWorldLayer.h; sourceTree = "<group>"; };
 		FB52ED341510CDD4000E70D0 /* HelloWorldLayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelloWorldLayer.m; sourceTree = "<group>"; };
+		FBFF3C9F1511E6E50098F6AE /* CCNode+SFGestureRecognizers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CCNode+SFGestureRecognizers.h"; sourceTree = "<group>"; };
+		FBFF3CA01511E6E50098F6AE /* CCNode+SFGestureRecognizers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CCNode+SFGestureRecognizers.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -446,8 +446,7 @@
 		FB52EBC21510CDCF000E70D0 /* Sample Project */ = {
 			isa = PBXGroup;
 			children = (
-				FB09AE3C1511CB7600DD32CD /* CCNode+SFGestureRecognizers.h */,
-				FB09AE3D1511CB7600DD32CD /* CCNode+SFGestureRecognizers.m */,
+				FBFF3C9E1511E6E50098F6AE /* CCNode+SFGestureRecognizers */,
 				FB52ED301510CDD4000E70D0 /* AppDelegate.h */,
 				FB52ED311510CDD4000E70D0 /* AppDelegate.m */,
 				FB52ED331510CDD4000E70D0 /* HelloWorldLayer.h */,
@@ -816,6 +815,16 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		FBFF3C9E1511E6E50098F6AE /* CCNode+SFGestureRecognizers */ = {
+			isa = PBXGroup;
+			children = (
+				FBFF3C9F1511E6E50098F6AE /* CCNode+SFGestureRecognizers.h */,
+				FBFF3CA01511E6E50098F6AE /* CCNode+SFGestureRecognizers.m */,
+			);
+			name = "CCNode+SFGestureRecognizers";
+			path = "../../CCNode+SFGestureRecognizers";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -988,7 +997,7 @@
 				FB52ED2F1510CDD4000E70D0 /* main.m in Sources */,
 				FB52ED321510CDD4000E70D0 /* AppDelegate.m in Sources */,
 				FB52ED351510CDD4000E70D0 /* HelloWorldLayer.m in Sources */,
-				FB09AE3E1511CB7600DD32CD /* CCNode+SFGestureRecognizers.m in Sources */,
+				FBFF3CA11511E6E50098F6AE /* CCNode+SFGestureRecognizers.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -121,8 +121,8 @@
 		FB96E0D81511DB2A007D8617 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FB96E0D71511DB2A007D8617 /* main.m */; };
 		FB96E0DB1511DB2A007D8617 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FB96E0DA1511DB2A007D8617 /* AppDelegate.m */; };
 		FB96E0DE1511DB2A007D8617 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FB96E0DD1511DB2A007D8617 /* RootViewController.m */; };
-		FB96E0EA1511DB41007D8617 /* HelloWorldLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FB96E0E91511DB41007D8617 /* HelloWorldLayer.m */; };
-		FB96E0ED1511DB54007D8617 /* CCNode+SFGestureRecognizers.m in Sources */ = {isa = PBXBuildFile; fileRef = FB96E0EC1511DB54007D8617 /* CCNode+SFGestureRecognizers.m */; };
+		FBFF3C951511E6AF0098F6AE /* CCNode+SFGestureRecognizers.m in Sources */ = {isa = PBXBuildFile; fileRef = FBFF3C941511E6AF0098F6AE /* CCNode+SFGestureRecognizers.m */; };
+		FBFF3C981511E6BC0098F6AE /* HelloWorldLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FBFF3C971511E6BC0098F6AE /* HelloWorldLayer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -359,10 +359,10 @@
 		FB96E0DC1511DB2A007D8617 /* RootViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		FB96E0DD1511DB2A007D8617 /* RootViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		FB96E0E21511DB2A007D8617 /* GameConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameConfig.h; sourceTree = "<group>"; };
-		FB96E0E81511DB41007D8617 /* HelloWorldLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloWorldLayer.h; path = "../../Sample Project/Sample Project/HelloWorldLayer.h"; sourceTree = "<group>"; };
-		FB96E0E91511DB41007D8617 /* HelloWorldLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HelloWorldLayer.m; path = "../../Sample Project/Sample Project/HelloWorldLayer.m"; sourceTree = "<group>"; };
-		FB96E0EB1511DB54007D8617 /* CCNode+SFGestureRecognizers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CCNode+SFGestureRecognizers.h"; path = "../../../../../Programming/Private/Kubik/Kubik/Other Code/CCNode+SFGestureRecognizers.h"; sourceTree = "<group>"; };
-		FB96E0EC1511DB54007D8617 /* CCNode+SFGestureRecognizers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "CCNode+SFGestureRecognizers.m"; path = "../../../../../Programming/Private/Kubik/Kubik/Other Code/CCNode+SFGestureRecognizers.m"; sourceTree = "<group>"; };
+		FBFF3C931511E6AF0098F6AE /* CCNode+SFGestureRecognizers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CCNode+SFGestureRecognizers.h"; sourceTree = "<group>"; };
+		FBFF3C941511E6AF0098F6AE /* CCNode+SFGestureRecognizers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CCNode+SFGestureRecognizers.m"; sourceTree = "<group>"; };
+		FBFF3C961511E6BC0098F6AE /* HelloWorldLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelloWorldLayer.h; path = "../../Sample Project cocos2d 2.x/Sample Project/HelloWorldLayer.h"; sourceTree = "<group>"; };
+		FBFF3C971511E6BC0098F6AE /* HelloWorldLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HelloWorldLayer.m; path = "../../Sample Project cocos2d 2.x/Sample Project/HelloWorldLayer.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -419,10 +419,9 @@
 		FB96DF871511DB24007D8617 /* Sample Project cocos2d 1.x */ = {
 			isa = PBXGroup;
 			children = (
-				FB96E0EB1511DB54007D8617 /* CCNode+SFGestureRecognizers.h */,
-				FB96E0EC1511DB54007D8617 /* CCNode+SFGestureRecognizers.m */,
-				FB96E0E81511DB41007D8617 /* HelloWorldLayer.h */,
-				FB96E0E91511DB41007D8617 /* HelloWorldLayer.m */,
+				FBFF3C961511E6BC0098F6AE /* HelloWorldLayer.h */,
+				FBFF3C971511E6BC0098F6AE /* HelloWorldLayer.m */,
+				FBFF3C921511E6AF0098F6AE /* CCNode+SFGestureRecognizers */,
 				FB96E0D91511DB2A007D8617 /* AppDelegate.h */,
 				FB96E0DA1511DB2A007D8617 /* AppDelegate.m */,
 				FB96E0DC1511DB2A007D8617 /* RootViewController.h */,
@@ -763,6 +762,16 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		FBFF3C921511E6AF0098F6AE /* CCNode+SFGestureRecognizers */ = {
+			isa = PBXGroup;
+			children = (
+				FBFF3C931511E6AF0098F6AE /* CCNode+SFGestureRecognizers.h */,
+				FBFF3C941511E6AF0098F6AE /* CCNode+SFGestureRecognizers.m */,
+			);
+			name = "CCNode+SFGestureRecognizers";
+			path = "../../CCNode+SFGestureRecognizers";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -797,6 +806,23 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				English,
+				da,
+				de,
+				es,
+				fi,
+				fr,
+				it,
+				ja,
+				ko,
+				nl,
+				no,
+				pl,
+				pt,
+				ru,
+				sv,
+				zh_CN,
+				zh_TW,
 			);
 			mainGroup = FB96DF681511DB22007D8617;
 			productRefGroup = FB96DF741511DB23007D8617 /* Products */;
@@ -929,8 +955,8 @@
 				FB96E0D81511DB2A007D8617 /* main.m in Sources */,
 				FB96E0DB1511DB2A007D8617 /* AppDelegate.m in Sources */,
 				FB96E0DE1511DB2A007D8617 /* RootViewController.m in Sources */,
-				FB96E0EA1511DB41007D8617 /* HelloWorldLayer.m in Sources */,
-				FB96E0ED1511DB54007D8617 /* CCNode+SFGestureRecognizers.m in Sources */,
+				FBFF3C951511E6AF0098F6AE /* CCNode+SFGestureRecognizers.m in Sources */,
+				FBFF3C981511E6BC0098F6AE /* HelloWorldLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
