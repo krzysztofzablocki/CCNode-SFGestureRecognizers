@@ -91,19 +91,16 @@ static NSString * const UIGestureRecognizerNodeKey = @"UIGestureRecognizerNodeKe
       UIGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesture:)];
       panGestureRecognizer.delegate = self;
       [sprite addGestureRecognizer:panGestureRecognizer];
-      [panGestureRecognizer release];
       
       //! pinch gesture recognizer
       UIPinchGestureRecognizer *pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
       [sprite addGestureRecognizer:pinchGestureRecognizer];
       pinchGestureRecognizer.delegate = self;
-      [pinchGestureRecognizer release];
       
       //! rotation gesture recognizer
       UIRotationGestureRecognizer *rotationGestureRecognizer = [[UIRotationGestureRecognizer alloc] initWithTarget:self action:@selector(handleRotationGestureRecognizer:)];
       [sprite addGestureRecognizer:rotationGestureRecognizer];
       rotationGestureRecognizer.delegate = self;
-      [rotationGestureRecognizer release];
       
       [self addChild:sprite];
     }
@@ -149,15 +146,6 @@ static NSString * const UIGestureRecognizerNodeKey = @"UIGestureRecognizerNodeKe
 }
 
 // on "dealloc" you need to release all your retained objects
-- (void) dealloc
-{
-	// in case you have something to dealloc, do it in this method
-	// in this particular example nothing needs to be released.
-	// cocos2d will automatically release all the children (Label)
-	
-	// don't forget to call "super dealloc"
-	[super dealloc];
-}
 
 #pragma mark GameKit delegate
 

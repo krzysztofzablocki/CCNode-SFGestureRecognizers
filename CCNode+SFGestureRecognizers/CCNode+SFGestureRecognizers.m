@@ -18,7 +18,7 @@
 //
 //  https://gist.github.com/1563325
 
-//  KZ Added AH_BRIDGE(x) 
+//  KrzysztofZabłocki Added AH_BRIDGE(x) to bridge cast to void*
 
 #ifndef AH_RETAIN
 #if __has_feature(objc_arc)
@@ -26,7 +26,7 @@
 #define AH_RELEASE(x) (void)(x)
 #define AH_AUTORELEASE(x) (x)
 #define AH_SUPER_DEALLOC (void)(0)
-#define AH_BRIDGE(x) (__bridge x)
+#define AH_BRIDGE(x) ((__bridge void*)x)
 #else
 #define __AH_WEAK
 #define AH_WEAK assign
@@ -188,7 +188,7 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
 #pragma mark - Handling delegate change
 - (void)setDelegate:(id<UIGestureRecognizerDelegate>)aDelegate
 {
-  __SFGestureRecognizersPassingDelegate *passingDelegate = objc_getAssociatedObject(self, UIGestureRecognizerSFGestureRecognizersPassingDelegateKey);
+  __SFGestureRecognizersPassingDelegate *passingDelegate = objc_getAssociatedObject(self, AH_BRIDGE(UIGestureRecognizerSFGestureRecognizersPassingDelegateKey));
   if (passingDelegate) {
     passingDelegate->originalDelegate = aDelegate;
   } else {
@@ -198,7 +198,7 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
 
 - (id<UIGestureRecognizerDelegate>)delegate
 {
-  __SFGestureRecognizersPassingDelegate *passingDelegate = objc_getAssociatedObject(self, UIGestureRecognizerSFGestureRecognizersPassingDelegateKey);
+  __SFGestureRecognizersPassingDelegate *passingDelegate = objc_getAssociatedObject(self, AH_BRIDGE(UIGestureRecognizerSFGestureRecognizersPassingDelegateKey));
   if (passingDelegate) {
     return passingDelegate->originalDelegate;
   }
@@ -222,7 +222,7 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
 - (CCNode*)sf_node
 #endif
 {
-  __SFGestureRecognizersPassingDelegate *passingDelegate = objc_getAssociatedObject(self, UIGestureRecognizerSFGestureRecognizersPassingDelegateKey);
+  __SFGestureRecognizersPassingDelegate *passingDelegate = objc_getAssociatedObject(self, AH_BRIDGE(UIGestureRecognizerSFGestureRecognizersPassingDelegateKey));
   if (passingDelegate) {
     return passingDelegate->node;
   }
@@ -253,7 +253,7 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
   passingDelegate->node = self;
   aGestureRecognizer.delegate = passingDelegate;
   //! retain passing delegate as it only lives as long as this gesture recognizer lives
-  objc_setAssociatedObject(aGestureRecognizer, UIGestureRecognizerSFGestureRecognizersPassingDelegateKey, passingDelegate, OBJC_ASSOCIATION_RETAIN);
+  objc_setAssociatedObject(aGestureRecognizer, AH_BRIDGE(UIGestureRecognizerSFGestureRecognizersPassingDelegateKey), passingDelegate, OBJC_ASSOCIATION_RETAIN);
   AH_RELEASE(passingDelegate);
   
   //! we need to swap gesture recognizer methods so that we can handle delegates nicely, but we also need to be able to call originalMethods if gesture isnt assigned to CCNode, do it only once in whole app
@@ -277,16 +277,16 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
   [[[CCDirector sharedDirector] performSelector:@selector(openGLView)] addGestureRecognizer:aGestureRecognizer];
 }
   //! add to array
-  NSMutableArray *gestureRecognizers = objc_getAssociatedObject(self, CCNodeSFGestureRecognizersArrayKey);
+  NSMutableArray *gestureRecognizers = objc_getAssociatedObject(self, AH_BRIDGE(CCNodeSFGestureRecognizersArrayKey));
   if (!gestureRecognizers) {
     gestureRecognizers = [NSMutableArray array];
-    objc_setAssociatedObject(self, CCNodeSFGestureRecognizersArrayKey, gestureRecognizers, OBJC_ASSOCIATION_RETAIN);
+    objc_setAssociatedObject(self, AH_BRIDGE(CCNodeSFGestureRecognizersArrayKey), gestureRecognizers, OBJC_ASSOCIATION_RETAIN);
     
   }
   [gestureRecognizers addObject:aGestureRecognizer];
 
   //! remove this gesture recognizer from view when array is deallocatd
-  __block CCNode *weakSelf = self; 
+  __AH_WEAK CCNode *weakSelf = self; 
   [__SFExecuteOnDealloc executeBlock:^{
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
     [weakSelf removeGestureRecognizer:aGestureRecognizer];
@@ -311,8 +311,8 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
 - (void)sf_removeGestureRecognizer:(UIGestureRecognizer*)aGestureRecognizer
 #endif
 {
-  NSMutableArray *gestureRecognizers = objc_getAssociatedObject(self, CCNodeSFGestureRecognizersArrayKey);
-  objc_setAssociatedObject(self, UIGestureRecognizerSFGestureRecognizersPassingDelegateKey, nil, OBJC_ASSOCIATION_RETAIN);
+  NSMutableArray *gestureRecognizers = objc_getAssociatedObject(self, AH_BRIDGE(CCNodeSFGestureRecognizersArrayKey));
+  objc_setAssociatedObject(self, AH_BRIDGE(UIGestureRecognizerSFGestureRecognizersPassingDelegateKey), nil, OBJC_ASSOCIATION_RETAIN);
   if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
     [[[CCDirector sharedDirector] performSelector:@selector(view)] removeGestureRecognizer:aGestureRecognizer];
   } else {
@@ -328,10 +328,10 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
 #endif
 {
   //! add to array
-  NSMutableArray *gestureRecognizers = objc_getAssociatedObject(self, CCNodeSFGestureRecognizersArrayKey);
+  NSMutableArray *gestureRecognizers = objc_getAssociatedObject(self, AH_BRIDGE(CCNodeSFGestureRecognizersArrayKey));
   if (!gestureRecognizers) {
     gestureRecognizers = [NSMutableArray array];
-    objc_setAssociatedObject(self, CCNodeSFGestureRecognizersArrayKey, gestureRecognizers, OBJC_ASSOCIATION_RETAIN);
+    objc_setAssociatedObject(self, AH_BRIDGE(CCNodeSFGestureRecognizersArrayKey), gestureRecognizers, OBJC_ASSOCIATION_RETAIN);
   }
   return [NSArray arrayWithArray: gestureRecognizers];
 }
@@ -412,7 +412,7 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
     return (BOOL)[self performSelector:@selector(isTouchEnabled)];
   }
   //! our own implementation
-  NSNumber *touchEnabled = objc_getAssociatedObject(self, CCNodeSFGestureRecognizersTouchEnabled);
+  NSNumber *touchEnabled = objc_getAssociatedObject(self, AH_BRIDGE(CCNodeSFGestureRecognizersTouchEnabled));
   if (!touchEnabled) {
     [self sf_setIsTouchEnabled:NO];
     return NO;
@@ -423,11 +423,11 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
 - (void)sf_setIsTouchEnabled:(BOOL)aTouchEnabled
 {
   if ([self respondsToSelector:@selector(setIsTouchEnabled:)]) {
-    [self performSelector:@selector(setIsTouchEnabled:) withObject:(id)aTouchEnabled];
+    [self setIsTouchEnabled:aTouchEnabled];
     return;
   }
   
-  objc_setAssociatedObject(self, CCNodeSFGestureRecognizersTouchEnabled, [NSNumber numberWithBool:aTouchEnabled], OBJC_ASSOCIATION_RETAIN);
+  objc_setAssociatedObject(self, AH_BRIDGE(CCNodeSFGestureRecognizersTouchEnabled), [NSNumber numberWithBool:aTouchEnabled], OBJC_ASSOCIATION_RETAIN);
 }
 
 #pragma mark - Touch Rectangle
@@ -438,7 +438,7 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
 - (void)sf_setTouchRect:(CGRect)aRect
 #endif
 {
-  objc_setAssociatedObject(self, CCNodeSFGestureRecognizersTouchRect, [NSValue valueWithCGRect:aRect], OBJC_ASSOCIATION_RETAIN);
+  objc_setAssociatedObject(self, AH_BRIDGE(CCNodeSFGestureRecognizersTouchRect), [NSValue valueWithCGRect:aRect], OBJC_ASSOCIATION_RETAIN);
 }
 
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
@@ -447,7 +447,7 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
 - (CGRect)sf_touchRect
 #endif
 {
-  NSValue *rectValue = objc_getAssociatedObject(self, CCNodeSFGestureRecognizersTouchRect);
+  NSValue *rectValue = objc_getAssociatedObject(self, AH_BRIDGE(CCNodeSFGestureRecognizersTouchRect));
   if (rectValue) {
     return [rectValue CGRectValue];
   } else {
