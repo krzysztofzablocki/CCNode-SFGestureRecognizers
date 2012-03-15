@@ -18,7 +18,7 @@
 //
 //  https://gist.github.com/1563325
 
-//  KrzysztofZabłocki Added AH_BRIDGE(x) to bridge cast to void*
+//  Krzysztof Zabłocki Added AH_BRIDGE(x) to bridge cast to void*
 
 #ifndef AH_RETAIN
 #if __has_feature(objc_arc)
