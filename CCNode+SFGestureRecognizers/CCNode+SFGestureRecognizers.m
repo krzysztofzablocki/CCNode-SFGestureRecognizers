@@ -5,6 +5,63 @@
 //  Created by Krzysztof Zablocki on 2/12/12.
 //  Copyright (c) 2012 Krzysztof Zablocki. All rights reserved.
 //
+//
+//  ARC Helper
+//
+//  Version 1.2.2
+//
+//  Created by Nick Lockwood on 05/01/2012.
+//  Copyright 2012 Charcoal Design
+//
+//  Distributed under the permissive zlib license
+//  Get the latest version from here:
+//
+//  https://gist.github.com/1563325
+
+//  KZ Added AH_BRIDGE(x) 
+
+#ifndef AH_RETAIN
+#if __has_feature(objc_arc)
+#define AH_RETAIN(x) (x)
+#define AH_RELEASE(x) (void)(x)
+#define AH_AUTORELEASE(x) (x)
+#define AH_SUPER_DEALLOC (void)(0)
+#define AH_BRIDGE(x) (__bridge x)
+#else
+#define __AH_WEAK
+#define AH_WEAK assign
+#define AH_RETAIN(x) [(x) retain]
+#define AH_RELEASE(x) [(x) release]
+#define AH_AUTORELEASE(x) [(x) autorelease]
+#define AH_SUPER_DEALLOC [super dealloc]
+#define AH_BRIDGE(x) (x)
+#endif
+#endif
+
+//  Weak reference support
+
+#ifndef AH_WEAK
+#if defined __IPHONE_OS_VERSION_MIN_REQUIRED
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_3
+#define __AH_WEAK __weak
+#define AH_WEAK weak
+#else
+#define __AH_WEAK __unsafe_unretained
+#define AH_WEAK unsafe_unretained
+#endif
+#elif defined __MAC_OS_X_VERSION_MIN_REQUIRED
+#if __MAC_OS_X_VERSION_MIN_REQUIRED > __MAC_10_6
+#define __AH_WEAK __weak
+#define AH_WEAK weak
+#else
+#define __AH_WEAK __unsafe_unretained
+#define AH_WEAK unsafe_unretained
+#endif
+#endif
+#endif
+
+//  ARC Helper ends
+
 #import "CCNode+SFGestureRecognizers.h"
 #import <objc/runtime.h>
 
@@ -24,8 +81,8 @@ typedef void(^__SFExecuteOnDeallocBlock)(void);
 + (id)executeBlock:(__SFExecuteOnDeallocBlock)aBlock onObjectDealloc:(id)aObject
 {
   __SFExecuteOnDealloc *executor = [[self alloc] initWithBlock:aBlock];
-  objc_setAssociatedObject(aObject, executor, executor, OBJC_ASSOCIATION_RETAIN);
-  return [executor autorelease];
+  objc_setAssociatedObject(aObject, AH_BRIDGE(executor), executor, OBJC_ASSOCIATION_RETAIN);
+  return AH_AUTORELEASE(executor);
 }
 
 - (id)initWithBlock:(__SFExecuteOnDeallocBlock)aBlock
@@ -42,8 +99,8 @@ typedef void(^__SFExecuteOnDeallocBlock)(void);
   if (block) {
     block();
   }
-  [block release];
-  [super dealloc];
+  AH_RELEASE(block);
+  AH_SUPER_DEALLOC;
 }
 @end
 
@@ -55,8 +112,8 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
 
 @interface __SFGestureRecognizersPassingDelegate : NSObject<UIGestureRecognizerDelegate> {
 @public
-  __weak id <UIGestureRecognizerDelegate> originalDelegate;
-  __weak CCNode *node;
+  __AH_WEAK id <UIGestureRecognizerDelegate> originalDelegate;
+  __AH_WEAK CCNode *node;
 }
 @end
 
@@ -197,7 +254,7 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
   aGestureRecognizer.delegate = passingDelegate;
   //! retain passing delegate as it only lives as long as this gesture recognizer lives
   objc_setAssociatedObject(aGestureRecognizer, UIGestureRecognizerSFGestureRecognizersPassingDelegateKey, passingDelegate, OBJC_ASSOCIATION_RETAIN);
-  [passingDelegate release];
+  AH_RELEASE(passingDelegate);
   
   //! we need to swap gesture recognizer methods so that we can handle delegates nicely, but we also need to be able to call originalMethods if gesture isnt assigned to CCNode, do it only once in whole app
   static dispatch_once_t onceToken;

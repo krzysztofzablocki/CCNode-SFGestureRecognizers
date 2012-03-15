@@ -13,7 +13,7 @@ Supported OS & SDK Versions
 ARC Compatibility
 ------------------
 
-Actually version doesn't use ARC, but if you would like it just add an issue on GitHub and I will add it.
+CCNode+SFGestureRecognizers automatically works with both ARC and non-ARC projects through conditional compilation. There is no need to exclude CCNode+SFGestureRecognizers files from the ARC validation process, or to convert CCNode+SFGestureRecognizers using the ARC conversion tool.
 
 Installation
 --------------
