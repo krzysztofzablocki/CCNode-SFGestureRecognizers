@@ -23,3 +23,32 @@ Include the CCNode+SFGestureRecognizers.h in your Prefix.pch file so that you ca
 
 Properties
 --------------
+CCNode+SFGestureRecognizers adds following properties / methods to CCNode:
+
+    @property (nonatomic, assign) BOOL isTouchEnabled;
+Defines if touches are enabled, if you disable it no gesture will be working.    
+    
+    @property (nonatomic, assign) CGRect touchRect;
+Defines touchable rectangle in node local coordinate space.
+
+    - (void)addGestureRecognizer:(UIGestureRecognizer*)aGestureRecognizer;
+Adds gesture recognizer to node.
+    
+    - (void)removeGestureRecognizer:(UIGestureRecognizer*)aGestureRecognizer;
+Removes gesture recognizer from node.
+    
+    - (NSArray*)gestureRecognizers;
+Returns all gesture recognizers that are bound to this node.
+
+    - (BOOL)isPointInArea:(CGPoint)pt;
+Tests if point is touchable in selected area without testing children nodes.    
+    
+    - (BOOL)isNodeInTreeTouched:(CGPoint)pt;
+Tests if points is touchable in a node or any of its children nodes.
+
+CCNode+SFGestureRecognizers also adds this property in UIGestureRecognizer class:
+
+    @property (nonatomic, readonly) CCNode *node;
+Node that this gesture is added to.
+
+
