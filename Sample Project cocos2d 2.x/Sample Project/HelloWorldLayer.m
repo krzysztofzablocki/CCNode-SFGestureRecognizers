@@ -43,41 +43,31 @@ static NSString * const UIGestureRecognizerNodeKey = @"UIGestureRecognizerNodeKe
 	// Apple recommends to re-assign "self" with the "super's" return value
 	if( (self=[super init])) {
     
+    self.isTouchEnabled = YES;
     
     static BOOL firstScene = YES;
-    CCMenuItem *button = nil;
-    if (firstScene) {
-      if ([[CCMenuItemFont class] respondsToSelector:@selector(itemWithString:block:)]) {
-        button = [CCMenuItemFont itemWithString:@"Push next scene" block:^(id sender) {
-          [[CCDirector sharedDirector] pushScene:[HelloWorldLayer scene]];
-        }];
-      } else {
-        button = [CCMenuItemFont itemFromString:@"Push next scene" block:^(id sender) {
-          [[CCDirector sharedDirector] pushScene:[HelloWorldLayer scene]];
-        }];
-      }
-      firstScene = NO;
-    } else {
-      if ([[CCMenuItemFont class] respondsToSelector:@selector(itemWithString:block:)]) {
-      button = [CCMenuItemFont itemWithString:@"Pop scene" block:^(id sender) {
-        [[CCDirector sharedDirector] popScene];
-      }];
-      } else {
-        button = [CCMenuItemFont itemFromString:@"Pop scene" block:^(id sender) {
-          [[CCDirector sharedDirector] popScene];
-        }];
-      }
-    }
-		
-		CCMenu *menu = [CCMenu menuWithItems:button, nil];
-		
-		[menu alignItemsHorizontallyWithPadding:20];
     CGSize size = [CCDirector sharedDirector].winSize;
-		[menu setPosition:ccp( size.width/2, size.height/2 - 50)];
-		
-		// Add the menu to the layer
-		[self addChild:menu];
-    
+    if (firstScene) {
+      CCLabelTTF *label = [CCLabelTTF labelWithString:@"Swipe to push scene" fontName:@"Verdana" fontSize:28];
+      label.position = ccp(size.width * 0.5f, size.height * 0.5f);
+      [self addChild:label];
+      firstScene = NO;
+      
+      UISwipeGestureRecognizer *swipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handlePushSceneGestureRecognizer:)];
+      [self addGestureRecognizer:swipeGestureRecognizer];
+      swipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight | UISwipeGestureRecognizerDirectionLeft;
+      swipeGestureRecognizer.delegate = self;
+      [swipeGestureRecognizer release];
+    } else {
+      CCLabelTTF *label = [CCLabelTTF labelWithString:@"Swipe to pop scene" fontName:@"Verdana" fontSize:28];
+      label.position = ccp(size.width * 0.5f, size.height * 0.5f);
+      [self addChild:label];
+      UISwipeGestureRecognizer *swipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handlePopSceneGestureRecognizer:)];
+      swipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight | UISwipeGestureRecognizerDirectionLeft;
+      swipeGestureRecognizer.delegate = self;
+      [self addGestureRecognizer:swipeGestureRecognizer];
+      [swipeGestureRecognizer release];
+    }
     
     //! add some random nodes
     int count = arc4random() % 12 + 4;
@@ -118,6 +108,23 @@ static NSString * const UIGestureRecognizerNodeKey = @"UIGestureRecognizerNodeKe
   return YES;
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+  //! For swipe gesture recognizer we want it to be executed only if it occurs on the main layer, not any of the subnodes ( main layer is higher in hierarchy than children so it will be receiving touch by default ) 
+  if ([gestureRecognizer class] == [UISwipeGestureRecognizer class]) {
+    CGPoint pt = [touch locationInView:touch.view];
+    pt = [[CCDirector sharedDirector] convertToGL:pt];
+    
+    for (CCNode *child in self.children) {
+      if ([child isNodeInTreeTouched:pt]) {
+        return NO;
+      }
+    }
+  }
+  
+  return YES;
+}
+
 - (void)handlePanGesture:(UIPanGestureRecognizer*)aPanGestureRecognizer
 {
   CCNode *node = aPanGestureRecognizer.node;
@@ -148,28 +155,15 @@ static NSString * const UIGestureRecognizerNodeKey = @"UIGestureRecognizerNodeKe
   }
 }
 
-// on "dealloc" you need to release all your retained objects
-- (void) dealloc
+- (void)handlePushSceneGestureRecognizer:(UISwipeGestureRecognizer*)aGestureRecognizer
 {
-	// in case you have something to dealloc, do it in this method
-	// in this particular example nothing needs to be released.
-	// cocos2d will automatically release all the children (Label)
-	
-	// don't forget to call "super dealloc"
-	[super dealloc];
+  CCScene *scene = [CCScene node];
+  [scene addChild:[HelloWorldLayer scene]];
+  [[CCDirector sharedDirector] pushScene:scene];
 }
 
-#pragma mark GameKit delegate
-
--(void) achievementViewControllerDidFinish:(GKAchievementViewController *)viewController
+- (void)handlePopSceneGestureRecognizer:(UISwipeGestureRecognizer*)aGestureRecognizer
 {
-	AppController *app = (AppController*) [[UIApplication sharedApplication] delegate];
-	[[app navController] dismissModalViewControllerAnimated:YES];
-}
-
--(void) leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController
-{
-	AppController *app = (AppController*) [[UIApplication sharedApplication] delegate];
-	[[app navController] dismissModalViewControllerAnimated:YES];
+  [[CCDirector sharedDirector] popScene];
 }
 @end
