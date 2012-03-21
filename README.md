@@ -40,12 +40,14 @@ Removes gesture recognizer from node.
     - (NSArray*)gestureRecognizers;
 Returns all gesture recognizers that are bound to this node.
 
-    - (BOOL)isPointInArea:(CGPoint)pt;
-Tests if point is touchable in selected area without testing children nodes.    
-    
+ 	- (BOOL)isPointTouchableInArea:(CGPoint)pt;
+Tests if point is touchable in selected area without testing children nodes (node must be visible and running to pass this check, isTouchEnabled also has to be set to YES )  
+
     - (BOOL)isNodeInTreeTouched:(CGPoint)pt;
 Tests if points is touchable in a node or any of its children nodes.
-
+    
+    - (BOOL)isPointInArea:(CGPoint)pt;
+Tests if point is inside in selected area without testing children nodes (node must be visible and running to pass this check, ignores isTouchEnabled ).
 CCNode+SFGestureRecognizers also adds this property in UIGestureRecognizer class:
 
     @property (nonatomic, readonly) CCNode *node;

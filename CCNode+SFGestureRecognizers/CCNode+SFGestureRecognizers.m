@@ -124,9 +124,9 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
 {
   CGPoint pt = [[CCDirector sharedDirector] convertToGL:[touch locationInView: [touch view]]];
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
-  BOOL rslt = [node isPointInArea:pt];
+  BOOL rslt = [node isPointTouchableInArea:pt];
 #else
-  BOOL rslt = [node sf_isPointInArea:pt];
+  BOOL rslt = [node sf_isPointTouchableInArea:pt];
 #endif
   
   //! we need to make sure that no other node ABOVE this one was touched, we want ONLY the top node with gesture recognizer to get callback
@@ -210,13 +210,13 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
 
 
 @implementation UIGestureRecognizer (SFGestureRecognizers)
-#ifdef SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
+#if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
 @dynamic node;
 #else
 @dynamic sf_node;
 #endif
 
-#ifdef SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
+#if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
 - (CCNode*)node
 #else
 - (CCNode*)sf_node
@@ -233,7 +233,7 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
 
 @implementation CCNode (SFGestureRecognizers)
 
-#ifdef SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
+#if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
 @dynamic isTouchEnabled;
 @dynamic touchRect;
 #else
@@ -346,15 +346,6 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
 {
   if (!visible_ || !isRunning_)
     return NO;
-#if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
-  if (!self.isTouchEnabled) {
-    return NO;
-  }
-#else 
-  if (!self.sf_isTouchEnabled) {
-    return NO;
-  }
-#endif
 
   //! convert to local space 
   pt = [self convertToNodeSpace:pt];
@@ -372,17 +363,38 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
 }
 
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
+- (BOOL)isPointTouchableInArea:(CGPoint)pt
+{
+  if (!self.isTouchEnabled) {
+    return NO;
+  } else {
+    return [self isPointInArea:pt];
+  }
+}
+#else
+- (BOOL)sf_isPointTouchableInArea:(CGPoint)pt
+{
+  if (!self.sf_isTouchEnabled) {
+    return NO;
+  } else {
+    return [self sf_isPointInArea:pt];
+  }
+}
+#endif
+
+
+#if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
 - (BOOL)isNodeInTreeTouched:(CGPoint)pt
 #else
 - (BOOL)sf_isNodeInTreeTouched:(CGPoint)pt
 #endif
 {
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
-  if( [self isPointInArea:pt] ) {
+  if( [self isPointTouchableInArea:pt] ) {
      return YES;
   }
 #else
-  if( [self sf_isPointInArea:pt] ) {
+  if( [self sf_isPointTouchableInArea:pt] ) {
     return YES;
   }
 #endif
@@ -423,7 +435,7 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
 - (void)sf_setIsTouchEnabled:(BOOL)aTouchEnabled
 {
   if ([self respondsToSelector:@selector(setIsTouchEnabled:)]) {
-    [self setIsTouchEnabled:aTouchEnabled];
+    [self sf_setIsTouchEnabled:aTouchEnabled];
     return;
   }
   
