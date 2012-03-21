@@ -48,6 +48,7 @@ Tests if points is touchable in a node or any of its children nodes.
     
     - (BOOL)isPointInArea:(CGPoint)pt;
 Tests if point is inside in selected area without testing children nodes (node must be visible and running to pass this check, ignores isTouchEnabled ).
+
 CCNode+SFGestureRecognizers also adds this property in UIGestureRecognizer class:
 
     @property (nonatomic, readonly) CCNode *node;
