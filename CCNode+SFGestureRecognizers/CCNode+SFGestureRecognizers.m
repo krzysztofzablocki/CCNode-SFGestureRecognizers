@@ -69,7 +69,7 @@
 typedef void(^__SFExecuteOnDeallocBlock)(void);
 
 @interface __SFExecuteOnDealloc : NSObject
-+ (id)executeBlock:(__SFExecuteOnDeallocBlock)aBlock onObjectDealloc:(id)aObject;
++ (void)executeBlock:(__SFExecuteOnDeallocBlock)aBlock onObjectDealloc:(id)aObject;
 - (id)initWithBlock:(__SFExecuteOnDeallocBlock)aBlock;
 @end
 
@@ -78,11 +78,11 @@ typedef void(^__SFExecuteOnDeallocBlock)(void);
   __SFExecuteOnDeallocBlock block;
 }
 
-+ (id)executeBlock:(__SFExecuteOnDeallocBlock)aBlock onObjectDealloc:(id)aObject
++ (void)executeBlock:(__SFExecuteOnDeallocBlock)aBlock onObjectDealloc:(id)aObject
 {
   __SFExecuteOnDealloc *executor = [[self alloc] initWithBlock:aBlock];
   objc_setAssociatedObject(aObject, AH_BRIDGE(executor), executor, OBJC_ASSOCIATION_RETAIN);
-  return AH_AUTORELEASE(executor);
+  AH_RELEASE(executor);
 }
 
 - (id)initWithBlock:(__SFExecuteOnDeallocBlock)aBlock
