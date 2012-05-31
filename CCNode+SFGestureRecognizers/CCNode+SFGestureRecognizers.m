@@ -286,7 +286,7 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
   [gestureRecognizers addObject:aGestureRecognizer];
 
   //! remove this gesture recognizer from view when array is deallocatd
-  __AH_WEAK CCNode *weakSelf = self; 
+  __unsafe_unretained __block CCNode *weakSelf = self; 
   [__SFExecuteOnDealloc executeBlock:^{
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
     [weakSelf removeGestureRecognizer:aGestureRecognizer];
