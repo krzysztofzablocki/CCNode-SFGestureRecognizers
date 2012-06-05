@@ -69,7 +69,7 @@
 typedef void(^__SFExecuteOnDeallocBlock)(void);
 
 @interface __SFExecuteOnDealloc : NSObject
-+ (void)executeBlock:(__SFExecuteOnDeallocBlock)aBlock onObjectDealloc:(id)aObject;
++ (id)executeBlock:(__SFExecuteOnDeallocBlock)aBlock onObjectDealloc:(id)aObject;
 - (id)initWithBlock:(__SFExecuteOnDeallocBlock)aBlock;
 @end
 
@@ -78,11 +78,11 @@ typedef void(^__SFExecuteOnDeallocBlock)(void);
   __SFExecuteOnDeallocBlock block;
 }
 
-+ (void)executeBlock:(__SFExecuteOnDeallocBlock)aBlock onObjectDealloc:(id)aObject
++ (id)executeBlock:(__SFExecuteOnDeallocBlock)aBlock onObjectDealloc:(id)aObject
 {
   __SFExecuteOnDealloc *executor = [[self alloc] initWithBlock:aBlock];
   objc_setAssociatedObject(aObject, AH_BRIDGE(executor), executor, OBJC_ASSOCIATION_RETAIN);
-  AH_RELEASE(executor);
+  return AH_AUTORELEASE(executor);
 }
 
 - (id)initWithBlock:(__SFExecuteOnDeallocBlock)aBlock
@@ -114,6 +114,7 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
 @public
   __AH_WEAK id <UIGestureRecognizerDelegate> originalDelegate;
   __AH_WEAK CCNode *node;
+  void *deallocBlockKey;
 }
 @end
 
@@ -287,13 +288,16 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
 
   //! remove this gesture recognizer from view when array is deallocatd
   __unsafe_unretained __block CCNode *weakSelf = self; 
-  [__SFExecuteOnDealloc executeBlock:^{
+  void *key = AH_BRIDGE([__SFExecuteOnDealloc executeBlock:^{
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
     [weakSelf removeGestureRecognizer:aGestureRecognizer];
 #else
     [weakSelf sf_removeGestureRecognizer:aGestureRecognizer];
 #endif
-  } onObjectDealloc:gestureRecognizers];
+  } onObjectDealloc:gestureRecognizers]);
+  
+  //! remember dealloc block key
+  passingDelegate->deallocBlockKey = key;
 
 #if SF_GESTURE_RECOGNIZERS_AUTO_ENABLE_TOUCH_ON_NEW_GESTURE_RECOGNIZER
   //! enable touch for this element or it won't work
@@ -312,6 +316,11 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
 #endif
 {
   NSMutableArray *gestureRecognizers = objc_getAssociatedObject(self, AH_BRIDGE(CCNodeSFGestureRecognizersArrayKey));
+  
+  //! remove dealloc block
+  __SFGestureRecognizersPassingDelegate *delegate = objc_getAssociatedObject(aGestureRecognizer, AH_BRIDGE(UIGestureRecognizerSFGestureRecognizersPassingDelegateKey));
+  objc_setAssociatedObject(gestureRecognizers, delegate->deallocBlockKey, nil, OBJC_ASSOCIATION_ASSIGN);
+
   objc_setAssociatedObject(self, AH_BRIDGE(UIGestureRecognizerSFGestureRecognizersPassingDelegateKey), nil, OBJC_ASSOCIATION_RETAIN);
   if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
     [[[CCDirector sharedDirector] performSelector:@selector(view)] removeGestureRecognizer:aGestureRecognizer];
