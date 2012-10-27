@@ -70,6 +70,7 @@ typedef void(^__SFExecuteOnDeallocBlock)(void);
 
 @interface __SFExecuteOnDealloc : NSObject
 + (id)executeBlock:(__SFExecuteOnDeallocBlock)aBlock onObjectDealloc:(id)aObject;
+
 - (id)initWithBlock:(__SFExecuteOnDeallocBlock)aBlock;
 @end
 
@@ -110,7 +111,7 @@ static NSString *const CCNodeSFGestureRecognizersTouchRect = @"CCNodeSFGestureRe
 static NSString *const CCNodeSFGestureRecognizersTouchEnabled = @"CCNodeSFGestureRecognizersTouchEnabled";
 static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey = @"UIGestureRecognizerSFGestureRecognizersPassingDelegateKey";
 
-@interface __SFGestureRecognizersPassingDelegate : NSObject<UIGestureRecognizerDelegate> {
+@interface __SFGestureRecognizersPassingDelegate : NSObject <UIGestureRecognizerDelegate> {
 @public
   __AH_WEAK id <UIGestureRecognizerDelegate> originalDelegate;
   __AH_WEAK CCNode *node;
@@ -123,32 +124,29 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
 #pragma mark - UIGestureRecognizer Delegate handling
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
-  CGPoint pt = [[CCDirector sharedDirector] convertToGL:[touch locationInView: [touch view]]];
+  CGPoint pt = [[CCDirector sharedDirector] convertToGL:[touch locationInView:[touch view]]];
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
   BOOL rslt = [node isPointTouchableInArea:pt];
 #else
   BOOL rslt = [node sf_isPointTouchableInArea:pt];
 #endif
-  
+
   //! we need to make sure that no other node ABOVE this one was touched, we want ONLY the top node with gesture recognizer to get callback
-  if( rslt )
-  {
-    CCNode* curNode = node;
-    CCNode* parent = node.parent;
-    while( curNode != nil && rslt)
-    {
-      CCNode* child;
+  if (rslt) {
+    CCNode *curNode = node;
+    CCNode *parent = node.parent;
+    while (curNode != nil && rslt) {
+      CCNode *child;
       BOOL nodeFound = NO;
-      CCARRAY_FOREACH(parent.children, child)
-      {
-        if( !nodeFound )
-        {
-          if( !nodeFound && curNode == child )
+      CCARRAY_FOREACH(parent.children, child){
+        if (!nodeFound) {
+          if (!nodeFound && curNode == child) {
             nodeFound = YES;
+          }
           continue;
         }
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
-        if( [child isNodeInTreeTouched:pt])
+        if ([child isNodeInTreeTouched:pt])
 #else
         if( [child sf_isNodeInTreeTouched:pt])          
 #endif
@@ -157,15 +155,16 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
           break;
         }
       }
-      
+
       curNode = parent;
       parent = curNode.parent;
     }
   }
-  
-  if( rslt && [originalDelegate respondsToSelector:@selector(gestureRecognizer:shouldReceiveTouch:)])
+
+  if (rslt && [originalDelegate respondsToSelector:@selector(gestureRecognizer:shouldReceiveTouch:)]) {
     rslt = [originalDelegate gestureRecognizer:gestureRecognizer shouldReceiveTouch:touch];
-  
+  }
+
   return rslt;
 }
 
@@ -182,12 +181,12 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
   if ([originalDelegate respondsToSelector:@selector(gestureRecognizer:shouldRecognizeSimultaneouslyWithGestureRecognizer:)]) {
     return [originalDelegate gestureRecognizer:gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:otherGestureRecognizer];
   }
-  
+
   return NO;
 }
 
 #pragma mark - Handling delegate change
-- (void)setDelegate:(id<UIGestureRecognizerDelegate>)aDelegate
+- (void)setDelegate:(id <UIGestureRecognizerDelegate>)aDelegate
 {
   __SFGestureRecognizersPassingDelegate *passingDelegate = objc_getAssociatedObject(self, AH_BRIDGE(UIGestureRecognizerSFGestureRecognizersPassingDelegateKey));
   if (passingDelegate) {
@@ -197,16 +196,27 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
   }
 }
 
-- (id<UIGestureRecognizerDelegate>)delegate
+- (id <UIGestureRecognizerDelegate>)delegate
 {
   __SFGestureRecognizersPassingDelegate *passingDelegate = objc_getAssociatedObject(self, AH_BRIDGE(UIGestureRecognizerSFGestureRecognizersPassingDelegateKey));
   if (passingDelegate) {
     return passingDelegate->originalDelegate;
   }
-  
+
   //! no delegate yet so use original method
-  return [self performSelector: @selector(originalDelegate)];
+  return [self performSelector:@selector(originalDelegate)];
 }
+
+- (Class)swappedClass
+{
+  Class originalClass = [self performSelector:@selector(originalClass)];
+  NSString *gestureClassString = NSStringFromClass(originalClass);
+  if ([gestureClassString hasPrefix:kSFGestureClassPrefix]) {
+    originalClass = NSClassFromString([gestureClassString stringByReplacingOccurrencesOfString:kSFGestureClassPrefix withString:@""]);
+  }
+  return originalClass;
+}
+
 @end
 
 
@@ -218,7 +228,7 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
 #endif
 
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
-- (CCNode*)node
+- (CCNode *)node
 #else
 - (CCNode*)sf_node
 #endif
@@ -243,7 +253,7 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
 #endif
 
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
-- (void)addGestureRecognizer:(UIGestureRecognizer*)aGestureRecognizer
+- (void)addGestureRecognizer:(UIGestureRecognizer *)aGestureRecognizer
 #else
 - (void)sf_addGestureRecognizer:(UIGestureRecognizer*)aGestureRecognizer
 #endif
@@ -256,46 +266,63 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
   //! retain passing delegate as it only lives as long as this gesture recognizer lives
   objc_setAssociatedObject(aGestureRecognizer, AH_BRIDGE(UIGestureRecognizerSFGestureRecognizersPassingDelegateKey), passingDelegate, OBJC_ASSOCIATION_RETAIN);
   AH_RELEASE(passingDelegate);
-  
-  //! we need to swap gesture recognizer methods so that we can handle delegates nicely, but we also need to be able to call originalMethods if gesture isnt assigned to CCNode, do it only once in whole app
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    Method originalGetter = class_getInstanceMethod([UIGestureRecognizer class], @selector(delegate));
-    Method originalSetter = class_getInstanceMethod([UIGestureRecognizer class], @selector(setDelegate:));
-    Method swappedGetter = class_getInstanceMethod([__SFGestureRecognizersPassingDelegate class], @selector(delegate));
-    Method swappedSetter = class_getInstanceMethod([__SFGestureRecognizersPassingDelegate class], @selector(setDelegate:));
-    
-    class_addMethod([UIGestureRecognizer class], @selector(originalDelegate), method_getImplementation(originalGetter), method_getTypeEncoding(originalGetter));
-    class_replaceMethod([UIGestureRecognizer class], @selector(delegate), method_getImplementation(swappedGetter), method_getTypeEncoding(swappedGetter));
-    class_addMethod([UIGestureRecognizer class], @selector(originalSetDelegate:), method_getImplementation(originalSetter), method_getTypeEncoding(originalSetter));
-    class_replaceMethod([UIGestureRecognizer class], @selector(setDelegate:), method_getImplementation(swappedSetter), method_getTypeEncoding(swappedSetter));
-  });
-  
 
-if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
-  [[[CCDirector sharedDirector] performSelector:@selector(view)] addGestureRecognizer:aGestureRecognizer];
-} else {
-  [[[CCDirector sharedDirector] performSelector:@selector(openGLView)] addGestureRecognizer:aGestureRecognizer];
-}
+  //! we need to swap gesture recognizer methods so that we can handle delegates nicely
+  //! let's not modify global classes, it's safer to implement new class for this gesture recognizer
+
+  NSString *gestureClassString = NSStringFromClass([aGestureRecognizer class]);
+  if (![gestureClassString hasPrefix:kSFGestureClassPrefix]) {
+    NSString *subclassName = [NSString stringWithFormat:@"sfg_%@", gestureClassString];
+    Class newClass = NSClassFromString(subclassName);
+    if (!newClass) {
+      newClass = objc_allocateClassPair([aGestureRecognizer class], [subclassName UTF8String], 0);
+      objc_registerClassPair(newClass);
+
+      Method originalGetter = class_getInstanceMethod(newClass, @selector(delegate));
+      Method originalSetter = class_getInstanceMethod(newClass, @selector(setDelegate:));
+      Method originalClass = class_getInstanceMethod(newClass, @selector(class));
+
+      Method swappedGetter = class_getInstanceMethod([__SFGestureRecognizersPassingDelegate class], @selector(delegate));
+      Method swappedSetter = class_getInstanceMethod([__SFGestureRecognizersPassingDelegate class], @selector(setDelegate:));
+      Method swappedClass = class_getInstanceMethod([__SFGestureRecognizersPassingDelegate class], @selector(swappedClass));
+
+      class_addMethod(newClass, @selector(originalDelegate), method_getImplementation(originalGetter), method_getTypeEncoding(originalGetter));
+      class_replaceMethod(newClass, @selector(delegate), method_getImplementation(swappedGetter), method_getTypeEncoding(swappedGetter));
+      
+      class_addMethod(newClass, @selector(originalSetDelegate:), method_getImplementation(originalSetter), method_getTypeEncoding(originalSetter));
+      class_replaceMethod(newClass, @selector(setDelegate:), method_getImplementation(swappedSetter), method_getTypeEncoding(swappedSetter));
+      
+      class_addMethod(newClass, @selector(originalClass), method_getImplementation(originalClass), method_getTypeEncoding(originalClass));
+      class_replaceMethod(newClass, @selector(class), method_getImplementation(swappedClass), method_getTypeEncoding(swappedClass));
+    }
+    object_setClass(aGestureRecognizer, newClass);
+  }
+  
+  if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
+    [[[CCDirector sharedDirector] performSelector:@selector(view)] addGestureRecognizer:aGestureRecognizer];
+  } else {
+    [[[CCDirector sharedDirector] performSelector:@selector(openGLView)] addGestureRecognizer:aGestureRecognizer];
+  }
+
   //! add to array
   NSMutableArray *gestureRecognizers = objc_getAssociatedObject(self, AH_BRIDGE(CCNodeSFGestureRecognizersArrayKey));
   if (!gestureRecognizers) {
     gestureRecognizers = [NSMutableArray array];
     objc_setAssociatedObject(self, AH_BRIDGE(CCNodeSFGestureRecognizersArrayKey), gestureRecognizers, OBJC_ASSOCIATION_RETAIN);
-    
+
   }
   [gestureRecognizers addObject:aGestureRecognizer];
 
   //! remove this gesture recognizer from view when array is deallocatd
-  __unsafe_unretained __block CCNode *weakSelf = self; 
+  __unsafe_unretained __block CCNode *weakSelf = self;
   void *key = AH_BRIDGE([__SFExecuteOnDealloc executeBlock:^{
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
     [weakSelf removeGestureRecognizer:aGestureRecognizer];
 #else
     [weakSelf sf_removeGestureRecognizer:aGestureRecognizer];
 #endif
-  } onObjectDealloc:gestureRecognizers]);
-  
+  }                                        onObjectDealloc:gestureRecognizers]);
+
   //! remember dealloc block key
   passingDelegate->deallocBlockKey = key;
 
@@ -310,13 +337,13 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
 }
 
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
-- (void)removeGestureRecognizer:(UIGestureRecognizer*)aGestureRecognizer
+- (void)removeGestureRecognizer:(UIGestureRecognizer *)aGestureRecognizer
 #else
 - (void)sf_removeGestureRecognizer:(UIGestureRecognizer*)aGestureRecognizer
 #endif
 {
   NSMutableArray *gestureRecognizers = objc_getAssociatedObject(self, AH_BRIDGE(CCNodeSFGestureRecognizersArrayKey));
-  
+
   //! remove dealloc block
   __SFGestureRecognizersPassingDelegate *delegate = objc_getAssociatedObject(aGestureRecognizer, AH_BRIDGE(UIGestureRecognizerSFGestureRecognizersPassingDelegateKey));
   objc_setAssociatedObject(gestureRecognizers, delegate->deallocBlockKey, nil, OBJC_ASSOCIATION_ASSIGN);
@@ -327,11 +354,19 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
   } else {
     [[[CCDirector sharedDirector] performSelector:@selector(openGLView)] removeGestureRecognizer:aGestureRecognizer];
   }
+  
+  //! restore original class
+  NSString *gestureClassString = NSStringFromClass(object_getClass(aGestureRecognizer));
+  if ([gestureClassString hasPrefix:kSFGestureClassPrefix]) {
+    Class originalClass = NSClassFromString([gestureClassString stringByReplacingOccurrencesOfString:kSFGestureClassPrefix withString:@""]);
+    object_setClass(aGestureRecognizer, originalClass);
+  }
+
   [gestureRecognizers removeObject:aGestureRecognizer];
 }
 
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
-- (NSArray*)gestureRecognizers
+- (NSArray *)gestureRecognizers
 #else
 - (NSArray*)sf_gestureRecognizers
 #endif
@@ -342,7 +377,7 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
     gestureRecognizers = [NSMutableArray array];
     objc_setAssociatedObject(self, AH_BRIDGE(CCNodeSFGestureRecognizersArrayKey), gestureRecognizers, OBJC_ASSOCIATION_RETAIN);
   }
-  return [NSArray arrayWithArray: gestureRecognizers];
+  return [NSArray arrayWithArray:gestureRecognizers];
 }
 
 #pragma mark - Point inside
@@ -353,21 +388,23 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
 - (BOOL)sf_isPointInArea:(CGPoint)pt
 #endif
 {
-  if (!visible_ || !isRunning_)
+  if (!visible_ || !isRunning_) {
     return NO;
+  }
 
   //! convert to local space 
   pt = [self convertToNodeSpace:pt];
-  
+
   //! get touchable rect in local space
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
   CGRect rect = self.touchRect;
 #else
   CGRect rect = self.sf_touchRect;
 #endif
-  
-  if( CGRectContainsPoint(rect,pt) )
+
+  if (CGRectContainsPoint(rect, pt)) {
     return YES;
+  }
   return NO;
 }
 
@@ -399,29 +436,28 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
 #endif
 {
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
-  if( [self isPointTouchableInArea:pt] ) {
-     return YES;
+  if ([self isPointTouchableInArea:pt]) {
+    return YES;
   }
 #else
   if( [self sf_isPointTouchableInArea:pt] ) {
     return YES;
   }
 #endif
-  
+
   BOOL rslt = NO;
-  CCNode* child;
-  CCARRAY_FOREACH(children_, child )
-  {
+  CCNode *child;
+  CCARRAY_FOREACH(children_, child ){
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
-    if( [child isNodeInTreeTouched:pt] )
+  if ([child isNodeInTreeTouched:pt])
 #else
     if( [child sf_isNodeInTreeTouched:pt] )
 #endif
-    {
-      rslt = YES;
-      break;
-    }
+  {
+    rslt = YES;
+    break;
   }
+}
   return rslt;
 }
 
@@ -447,7 +483,7 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
     [self sf_setIsTouchEnabled:aTouchEnabled];
     return;
   }
-  
+
   objc_setAssociatedObject(self, AH_BRIDGE(CCNodeSFGestureRecognizersTouchEnabled), [NSNumber numberWithBool:aTouchEnabled], OBJC_ASSOCIATION_RETAIN);
 }
 
@@ -498,12 +534,12 @@ if ([[CCDirector sharedDirector] respondsToSelector:@selector(view)]) {
 {
   if (![self respondsToSelector:aSelector]) {
     if (aSelector == @selector(isTouchEnabled)) {
-      return [self methodSignatureForSelector:@selector(sf_isTouchEnabled)]; 
+      return [self methodSignatureForSelector:@selector(sf_isTouchEnabled)];
     } else if (aSelector == @selector(setIsTouchEnabled:)) {
-      return [self methodSignatureForSelector:@selector(sf_setIsTouchEnabled:)]; 
+      return [self methodSignatureForSelector:@selector(sf_setIsTouchEnabled:)];
     }
   }
-  
+
   return [super methodSignatureForSelector:aSelector];
 }
 #endif

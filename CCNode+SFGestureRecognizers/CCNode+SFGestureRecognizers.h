@@ -31,6 +31,8 @@
 #define SF_GESTURE_RECOGNIZERS_AUTO_ENABLE_TOUCH_ON_NEW_GESTURE_RECOGNIZER 0
 
 
+static NSString *const kSFGestureClassPrefix = @"sfg_";
+
 @interface UIGestureRecognizer (SFGestureRecognizers)
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
 @property (nonatomic, readonly) CCNode *node;
