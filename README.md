@@ -18,6 +18,10 @@ CCNode+SFGestureRecognizers automatically works with both ARC and non-ARC projec
 Installation
 --------------
 
+If you are using CocoaPods, you can just add CCNode+SFGestureRecognizers to your Podfile. If you didn't use it before I'm recommending you check it out: http://cocoapods.org/
+
+### Manual Install
+
 To use the CCNode+SFGestureRecognizers category in an app, just drag the category files (demo files and assets are not needed) into your project.
 Include the CCNode+SFGestureRecognizers.h in your Prefix.pch file so that you can use it everywhere.
 
