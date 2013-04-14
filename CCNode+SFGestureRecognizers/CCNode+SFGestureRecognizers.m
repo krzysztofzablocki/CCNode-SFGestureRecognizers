@@ -388,7 +388,7 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
 - (BOOL)sf_isPointInArea:(CGPoint)pt
 #endif
 {
-  if (!self.visible || !isRunning_) {
+  if (!self.visible || !self.isRunning) {
     return NO;
   }
 

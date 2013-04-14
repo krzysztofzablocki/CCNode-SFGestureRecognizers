@@ -8,5 +8,5 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/krzysztofzablocki/CCNode-SFGestureRecognizers.git", :tag => "1.0" }
   s.platform     = :ios
   s.source_files = 'CCNode+SFGestureRecognizers', 'CCNode+SFGestureRecognizers/**/*.{h,m}'
-  s.dependency 'cocos2d', '~> 1.1.rc0'
+  s.dependency 'cocos2d', '~> 2.0'
 end
