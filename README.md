@@ -4,6 +4,8 @@ Purpose
 CCNode+SFGestureRecognizers is a category designed to simplify adding UIGestureRecognizers support in cocos2d. 
 It removes the need to change cocos2d source code so that you can update your cocos2d anytime new versions are released.
 
+[Follow me on twitter][1]
+
 Supported OS & SDK Versions
 -----------------------------
 
@@ -58,4 +60,6 @@ CCNode+SFGestureRecognizers also adds this property in UIGestureRecognizer class
     @property (nonatomic, readonly) CCNode *node;
 Node that this gesture is added to.
 
+
+  [1]: http://twitter.com/merowing_
 
