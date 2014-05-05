@@ -212,6 +212,7 @@
 		BD7B2CC1191827850015C4E8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7B2CC0191827850015C4E8 /* AppDelegate.m */; };
 		BD7B2CC4191827850015C4E8 /* HelloWorldScene.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7B2CC3191827850015C4E8 /* HelloWorldScene.m */; };
 		BD7B2CC7191827850015C4E8 /* IntroScene.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7B2CC6191827850015C4E8 /* IntroScene.m */; };
+		BD7B2CD919182EEC0015C4E8 /* CCNode+SFGestureRecognizers.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7B2CD819182EEC0015C4E8 /* CCNode+SFGestureRecognizers.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -653,6 +654,8 @@
 		BD7B2CC3191827850015C4E8 /* HelloWorldScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HelloWorldScene.m; path = Classes/HelloWorldScene.m; sourceTree = "<group>"; };
 		BD7B2CC5191827850015C4E8 /* IntroScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IntroScene.h; path = Classes/IntroScene.h; sourceTree = "<group>"; };
 		BD7B2CC6191827850015C4E8 /* IntroScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IntroScene.m; path = Classes/IntroScene.m; sourceTree = "<group>"; };
+		BD7B2CD719182EEC0015C4E8 /* CCNode+SFGestureRecognizers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CCNode+SFGestureRecognizers.h"; path = "../../CCNode+SFGestureRecognizers/CCNode+SFGestureRecognizers.h"; sourceTree = "<group>"; };
+		BD7B2CD819182EEC0015C4E8 /* CCNode+SFGestureRecognizers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "CCNode+SFGestureRecognizers.m"; path = "../../CCNode+SFGestureRecognizers/CCNode+SFGestureRecognizers.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1554,6 +1557,8 @@
 		BD7B2CD3191827E90015C4E8 /* CCNode+SFGestureRecognizers */ = {
 			isa = PBXGroup;
 			children = (
+				BD7B2CD719182EEC0015C4E8 /* CCNode+SFGestureRecognizers.h */,
+				BD7B2CD819182EEC0015C4E8 /* CCNode+SFGestureRecognizers.m */,
 			);
 			name = "CCNode+SFGestureRecognizers";
 			sourceTree = "<group>";
@@ -1704,6 +1709,7 @@
 				BD7B2AA6191827830015C4E8 /* CCLabelBMFont.m in Sources */,
 				BD7B2A64191827830015C4E8 /* CCActionEase.m in Sources */,
 				BD7B2A73191827830015C4E8 /* CCActionTween.m in Sources */,
+				BD7B2CD919182EEC0015C4E8 /* CCNode+SFGestureRecognizers.m in Sources */,
 				BD7B2BE1191827840015C4E8 /* NSMutableDictionary+WeakReferences.m in Sources */,
 				BD7B2ABE191827830015C4E8 /* CCNode+Debug.m in Sources */,
 				BD7B2A77191827830015C4E8 /* CCAnimation.m in Sources */,
@@ -1997,6 +2003,7 @@
 				BD7B2CCC191827850015C4E8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		BD7B2CCD191827850015C4E8 /* Build configuration list for PBXNativeTarget "Sample Project Cocos2d 3.x" */ = {
 			isa = XCConfigurationList;
@@ -2005,6 +2012,7 @@
 				BD7B2CCF191827850015C4E8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

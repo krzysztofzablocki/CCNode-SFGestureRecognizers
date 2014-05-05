@@ -9,8 +9,9 @@
 
 #import "HelloWorldScene.h"
 #import "IntroScene.h"
+#import "CCNode+SFGestureRecognizers.h"
 
-@interface HelloWorldScene()
+@interface HelloWorldScene() <UIGestureRecognizerDelegate>
 
 @end
 
@@ -63,9 +64,77 @@
     [backButton setTarget:self selector:@selector(onBackClicked:)];
     [self addChild:backButton];
     
+    
+    // Add Pan Gestures and Sample CCSprite objects
+    CGSize size = [CCDirector sharedDirector].viewSize;
+    int count = arc4random() % 12 + 4;
+    for (int i=0; i < count; ++i) {
+        CCSprite *sprite = [CCSprite spriteWithImageNamed:@"Default.png"];
+        sprite.scale = 0.5f;
+        sprite.position = ccp(arc4random() % (int)size.width, arc4random() % (int)size.height);
+        sprite.isTouchEnabled = YES;
+//        sprite.userInteractionEnabled = YES;
+        
+        //! pan gesture recognizer
+        UIGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesture:)];
+        panGestureRecognizer.delegate = self;
+        [sprite addGestureRecognizer:panGestureRecognizer];
+        
+        //! pinch gesture recognizer
+        UIPinchGestureRecognizer *pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
+        [sprite addGestureRecognizer:pinchGestureRecognizer];
+        pinchGestureRecognizer.delegate = self;
+        
+        //! rotation gesture recognizer
+        UIRotationGestureRecognizer *rotationGestureRecognizer = [[UIRotationGestureRecognizer alloc] initWithTarget:self action:@selector(handleRotationGestureRecognizer:)];
+        [sprite addGestureRecognizer:rotationGestureRecognizer];
+        rotationGestureRecognizer.delegate = self;
+        
+        [self addChild:sprite];
+    }
+
     // done
 	return self;
 }
+
+
+
+#pragma mark - GestureRecognizer delegate
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
+}
+
+- (void)handlePanGesture:(UIPanGestureRecognizer*)aPanGestureRecognizer
+{
+    CCNode *node = aPanGestureRecognizer.node;
+    CGPoint translation = [aPanGestureRecognizer translationInView:aPanGestureRecognizer.view];
+    translation.y *= -1;
+    [aPanGestureRecognizer setTranslation:CGPointZero inView:aPanGestureRecognizer.view];
+    
+    node.position = ccpAdd(node.position, translation);
+}
+
+- (void)handlePinchGesture:(UIPinchGestureRecognizer*)aPinchGestureRecognizer
+{
+    if (aPinchGestureRecognizer.state == UIGestureRecognizerStateBegan || aPinchGestureRecognizer.state == UIGestureRecognizerStateChanged) {
+        CCNode *node = aPinchGestureRecognizer.node;
+        float scale = [aPinchGestureRecognizer scale];
+        node.scale *= scale;
+        aPinchGestureRecognizer.scale = 1;
+    }
+}
+
+- (void)handleRotationGestureRecognizer:(UIRotationGestureRecognizer*)aRotationGestureRecognizer
+{
+    if (aRotationGestureRecognizer.state == UIGestureRecognizerStateBegan || aRotationGestureRecognizer.state == UIGestureRecognizerStateChanged) {
+        CCNode *node = aRotationGestureRecognizer.node;
+        float rotation = aRotationGestureRecognizer.rotation;
+        node.rotation += CC_RADIANS_TO_DEGREES(rotation);
+        aRotationGestureRecognizer.rotation = 0;
+    }
+}
+
 
 // -----------------------------------------------------------------------
 
