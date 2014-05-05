@@ -138,7 +138,9 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
     while (curNode != nil && rslt) {
       CCNode *child;
       BOOL nodeFound = NO;
-      CCARRAY_FOREACH(parent.children, child){
+// Paul Solt - How do we enable backwards compatibility?
+//      CCARRAY_FOREACH(parent.children, child){
+        for(child in parent.children) {
         if (!nodeFound) {
           if (!nodeFound && curNode == child) {
             nodeFound = YES;
@@ -392,7 +394,9 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
 - (BOOL)sf_isPointInArea:(CGPoint)pt
 #endif
 {
-  if (!self.visible || !self.isRunning) {
+// Paul Solt - How do we enable backwards compatibility?
+  if (!self.visible || !self.isRunningInActiveScene) {
+//  if (!self.visible || !self.isRunning) {
     return NO;
   }
 
@@ -451,7 +455,11 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
 
   BOOL rslt = NO;
   CCNode *child;
-  CCARRAY_FOREACH(self.children, child ){
+    
+// Paul Solt - How do we enable backwards compatibility?
+    for(child in self.children) {
+//  CCARRAY_FOREACH(self.children, child ){
+        
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
   if ([child isNodeInTreeTouched:pt])
 #else
