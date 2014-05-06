@@ -72,9 +72,9 @@
         CCSprite *sprite = [CCSprite spriteWithImageNamed:@"Default.png"];
         sprite.scale = 0.5f;
         sprite.position = ccp(arc4random() % (int)size.width, arc4random() % (int)size.height);
-        sprite.isTouchEnabled = YES;
-//        sprite.userInteractionEnabled = YES;
-        
+//        sprite.isTouchEnabled = YES;
+        sprite.userInteractionEnabled = YES;  // Added in cocos2d 3.0
+
         //! pan gesture recognizer
         UIGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesture:)];
         panGestureRecognizer.delegate = self;
