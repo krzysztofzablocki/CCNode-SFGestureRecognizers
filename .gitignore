@@ -15,6 +15,7 @@ dsa_priv.pem
 *.perspectivev3
 *.pbxuser
 *.xcuserdata
+*.xcuserdatad
 
 # Generated files
 VersionX-revision.h
@@ -40,3 +41,5 @@ Backup[ ]of[ ]*.pages/
 Backup[ ]of[ ]*.key/
 Backup[ ]of[ ]*.numbers/
 *.xcuserstate
+
+*.xccheckout

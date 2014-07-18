@@ -138,7 +138,7 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
     while (curNode != nil && rslt) {
       CCNode *child;
       BOOL nodeFound = NO;
-      CCARRAY_FOREACH(parent.children, child){
+        for(child in parent.children) {
         if (!nodeFound) {
           if (!nodeFound && curNode == child) {
             nodeFound = YES;
@@ -392,7 +392,14 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
 - (BOOL)sf_isPointInArea:(CGPoint)pt
 #endif
 {
-  if (!self.visible || !self.isRunning) {
+    // isRunning changed to isRunningInActiveScene in cocos2d 3.0
+  BOOL isRunningFlag = NO;
+  if([self respondsToSelector:@selector(isRunning)]) {
+    isRunningFlag = [self performSelector:@selector(isRunning) withObject:nil];
+  } else if([self respondsToSelector:@selector(isRunningInActiveScene)]) {
+    isRunningFlag = [self performSelector:@selector(isRunningInActiveScene) withObject:nil];
+  }
+  if (!self.visible || !isRunningFlag) {
     return NO;
   }
 
@@ -415,7 +422,12 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
 - (BOOL)isPointTouchableInArea:(CGPoint)pt
 {
-  if (!self.isTouchEnabled) {
+  // isUserInteraction added to CCNode in cocos2d 3.0
+  BOOL userInteractionEnabledFlag = NO;
+  if([self respondsToSelector:@selector(isUserInteractionEnabled)]) {
+    userInteractionEnabledFlag = [self performSelector:@selector(isUserInteractionEnabled)];
+  }
+  if(!(self.isTouchEnabled || userInteractionEnabledFlag)) {
     return NO;
   } else {
     return [self isPointInArea:pt];
@@ -451,7 +463,7 @@ static NSString *const UIGestureRecognizerSFGestureRecognizersPassingDelegateKey
 
   BOOL rslt = NO;
   CCNode *child;
-  CCARRAY_FOREACH(self.children, child ){
+  for(child in self.children) {
 #if SF_GESTURE_RECOGNIZERS_USE_SHORTHAND
   if ([child isNodeInTreeTouched:pt])
 #else
